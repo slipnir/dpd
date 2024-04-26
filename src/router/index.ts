@@ -1,25 +1,31 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory, RouteLocationNormalized } from 'vue-router';
+import UserTable from '@/components/UserTable.vue';
 
-const routes: Array<RouteRecordRaw> = [
+const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    name: 'UserTable',
+    component: UserTable,
+    props: (route: RouteLocationNormalized) => {
+      const search = Array.isArray(route.query.search)
+          ? route.query.search[0]
+          : route.query.search || '';
+
+      const currentPage = Array.isArray(route.query.page)
+          ? Number(route.query.page[0])
+          : Number(route.query.page) || 1;
+
+      return {
+        searchQuery: search,
+        currentPage,
+      };
+    },
   },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-]
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
